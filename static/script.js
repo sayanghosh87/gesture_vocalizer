@@ -292,14 +292,40 @@ let micShouldRun = false;     // true while the USER wants the mic on (drives au
 let restartAttempts = 0;
 const MAX_RESTART_ATTEMPTS = 5;
 
+function setMicStatus(text, isError) {
+    const el = document.getElementById('mic-status');
+    if (!el) return;
+    el.innerText = text;
+    el.style.color = isError ? "#ef4444" : "var(--text-muted)";
+}
+
+// --- Hard prerequisite checks, run immediately and surfaced on screen ---
+if (!window.isSecureContext) {
+    setMicStatus(
+        "⚠ Mic/voice will NOT work: this page must be opened via " +
+        "http://localhost:5000 or https://, not a network IP like " +
+        "http://192.168.x.x. Change the address bar and reload.", true
+    );
+} else if (!SpeechRecognition) {
+    setMicStatus("⚠ This browser doesn't support voice input. Use Chrome or Edge.", true);
+} else if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    setMicStatus("⚠ This browser has no microphone API available.", true);
+}
+
 // Request mic permission on page load so Chrome remembers it
-navigator.mediaDevices.getUserMedia({ audio: true })
-.then(stream => {
-    // Got permission, now release it immediately
-    stream.getTracks().forEach(track => track.stop());
-    console.log("✅ Microphone permission granted");
-})
-.catch(err => console.warn("Mic permission not granted:", err));
+if (window.isSecureContext && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+        // Got permission, now release it immediately
+        stream.getTracks().forEach(track => track.stop());
+        console.log("✅ Microphone permission granted");
+    })
+    .catch(err => {
+        console.warn("Mic permission not granted:", err);
+        setMicStatus(`⚠ Microphone permission problem: ${err.name}. ` +
+                     `Click the lock icon in the address bar → allow Microphone.`, true);
+    });
+}
 
 function setMicUI(listening) {
     const btn = document.getElementById('mic-btn');
@@ -326,7 +352,16 @@ function createRecognition() {
         micActive = true;
         restartAttempts = 0;
         setMicUI(true);
+        setMicStatus("Listening — speak now.", false);
         console.log("🎤 Mic started - speak now!");
+    };
+
+    rec.onaudiostart = () => {
+        setMicStatus("Mic is capturing audio…", false);
+    };
+
+    rec.onspeechstart = () => {
+        setMicStatus("Speech detected, transcribing…", false);
     };
 
     rec.onresult = (e) => {
@@ -348,6 +383,7 @@ function createRecognition() {
             document.getElementById('t2s-input').value = finalTranscript;
             micShouldRun = false; // got what we needed — stop listening cleanly
             rec.stop();
+            setMicStatus(`Heard: "${finalTranscript}"`, false);
             document.getElementById('t2s-translate-btn').click();
         }
     };
@@ -356,7 +392,19 @@ function createRecognition() {
         console.warn("Speech recognition error:", e.error);
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
             micShouldRun = false;
-            alert("Microphone access denied!\nClick the lock icon in Chrome's address bar and allow Microphone.");
+            setMicStatus("⚠ Microphone access denied. Click the lock icon in the " +
+                         "address bar → allow Microphone, then click Mic again.", true);
+        } else if (e.error === 'network') {
+            setMicStatus("⚠ Network error — speech recognition needs an active " +
+                         "internet connection (it streams audio to Google's servers). " +
+                         "Retrying…", true);
+        } else if (e.error === 'audio-capture') {
+            setMicStatus("⚠ No microphone found, or it's in use by another app. " +
+                         "Check your OS sound settings.", true);
+        } else if (e.error === 'no-speech') {
+            setMicStatus("No speech detected yet — still listening…", false);
+        } else {
+            setMicStatus(`⚠ Recognition error: ${e.error}. Retrying…`, true);
         }
         // 'no-speech', 'audio-capture', 'network', 'aborted' are transient —
         // onend (below) restarts automatically instead of giving up here.
@@ -374,14 +422,17 @@ function createRecognition() {
                         recognition.start();
                     } catch (err) {
                         console.error("Restart failed:", err);
+                        setMicStatus(`⚠ Could not restart mic: ${err.message}`, true);
                     }
                 }
             }, 250);
         } else {
             if (restartAttempts >= MAX_RESTART_ATTEMPTS) {
-                console.warn("Speech recognition stopped after repeated failures. " +
-                             "Check your internet connection and that the page is " +
-                             "served over https:// or http://localhost.");
+                setMicStatus("⚠ Gave up after repeated failures. Check your internet " +
+                             "connection, OS microphone permissions, and that you're on " +
+                             "http://localhost:5000 (not a LAN IP).", true);
+            } else {
+                setMicStatus("", false);
             }
             micShouldRun = false;
             setMicUI(false);
@@ -397,7 +448,14 @@ if (SpeechRecognition) {
 
 document.getElementById('mic-btn').addEventListener('click', () => {
     if (!recognition) {
-        alert("Your browser does not support Speech Recognition.\nPlease use Google Chrome or Microsoft Edge!");
+        setMicStatus("⚠ This browser doesn't support voice input. Use Chrome or Edge.", true);
+        return;
+    }
+    if (!window.isSecureContext) {
+        setMicStatus(
+            "⚠ Mic will NOT work here: open this page via http://localhost:5000, " +
+            "not a network IP.", true
+        );
         return;
     }
 
@@ -410,6 +468,7 @@ document.getElementById('mic-btn').addEventListener('click', () => {
 
     micShouldRun = true;
     restartAttempts = 0;
+    setMicStatus("Starting mic…", false);
     try {
         recognition.start();
     } catch (err) {
@@ -417,7 +476,10 @@ document.getElementById('mic-btn').addEventListener('click', () => {
         // fully tear down yet — recreate a fresh instance and retry once.
         recognition = createRecognition();
         setTimeout(() => {
-            try { recognition.start(); } catch (e) { console.error(e); }
+            try { recognition.start(); } catch (e) {
+                console.error(e);
+                setMicStatus(`⚠ Could not start mic: ${e.message}`, true);
+            }
         }, 300);
     }
 });
