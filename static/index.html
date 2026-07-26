@@ -19,7 +19,21 @@
 
         <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="logo">Sign<span>Scribe</span></div>
+            <div class="logo-row">
+                <!-- Original minimalist owl icon (not a copyrighted asset) -->
+                <svg class="owl-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="32" cy="36" rx="20" ry="22" fill="currentColor" opacity="0.9"/>
+                    <path d="M12 20 L20 6 L26 18 Z" fill="currentColor"/>
+                    <path d="M52 20 L44 6 L38 18 Z" fill="currentColor"/>
+                    <circle cx="24" cy="32" r="8" fill="#05060a"/>
+                    <circle cx="40" cy="32" r="8" fill="#05060a"/>
+                    <circle cx="24" cy="32" r="3.4" fill="currentColor"/>
+                    <circle cx="40" cy="32" r="3.4" fill="currentColor"/>
+                    <path d="M32 36 L28 44 L36 44 Z" fill="#05060a"/>
+                    <path d="M18 50 Q32 58 46 50 L46 54 Q32 62 18 54 Z" fill="currentColor" opacity="0.85"/>
+                </svg>
+                <div class="logo">Sign<span>Scribe</span></div>
+            </div>
 
             <nav class="nav-menu">
                 <button class="nav-item active" onclick="switchTab('record', 'Record an Incantation')">
@@ -36,6 +50,13 @@
                 </button>
             </nav>
 
+            <!-- Original castle-skyline silhouette, hand-drawn shapes (not the official Hogwarts artwork) -->
+            <div class="castle-silhouette">
+                <svg viewBox="0 0 280 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="currentColor" d="M0,90 L0,60 L10,60 L10,50 L18,50 L18,60 L26,60 L26,40 L20,40 L20,30 L26,30 L26,20 L32,10 L38,20 L38,30 L44,30 L44,40 L38,40 L38,60 L60,60 L60,45 L54,45 L54,35 L60,35 L60,25 L66,25 L66,35 L72,35 L72,45 L66,45 L66,60 L100,60 L100,48 L94,48 L94,38 L100,38 L100,28 L106,18 L112,28 L112,38 L118,38 L118,48 L112,48 L112,60 L150,60 L150,55 L146,55 L146,50 L150,50 L150,45 L154,45 L154,50 L158,50 L158,55 L154,55 L154,60 L190,60 L190,42 L184,42 L184,32 L190,32 L190,22 L196,12 L202,22 L202,32 L208,32 L208,42 L202,42 L202,60 L230,60 L230,50 L224,50 L224,40 L230,40 L230,30 L236,20 L242,30 L242,40 L248,40 L248,50 L242,50 L242,60 L280,60 L280,90 Z"/>
+                </svg>
+            </div>
+
             <div class="sidebar-footer">
                 <div class="status-indicator live"></div> The Enchantment Holds
             </div>
@@ -45,11 +66,33 @@
         <main class="main-content">
             <div class="top-bar">
                 <h2 id="page-title">Record an Incantation</h2>
+
+                <!-- Original floating candle illustrations -->
+                <div class="candles-row">
+                    <svg class="candle" viewBox="0 0 26 64" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="9" y="24" width="8" height="34" rx="1.5" fill="#f2e7c9"/>
+                        <rect x="9" y="24" width="8" height="6" fill="#d3a625" opacity="0.6"/>
+                        <ellipse class="flame" cx="13" cy="16" rx="4.5" ry="9" fill="#f7b733"/>
+                        <ellipse class="flame" cx="13" cy="18" rx="2.2" ry="4.5" fill="#fff3c4"/>
+                    </svg>
+                    <svg class="candle" viewBox="0 0 26 64" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="9" y="30" width="8" height="28" rx="1.5" fill="#f2e7c9"/>
+                        <rect x="9" y="30" width="8" height="6" fill="#d3a625" opacity="0.6"/>
+                        <ellipse class="flame" cx="13" cy="22" rx="4.5" ry="9" fill="#f7b733"/>
+                        <ellipse class="flame" cx="13" cy="24" rx="2.2" ry="4.5" fill="#fff3c4"/>
+                    </svg>
+                    <svg class="candle" viewBox="0 0 26 64" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="9" y="20" width="8" height="38" rx="1.5" fill="#f2e7c9"/>
+                        <rect x="9" y="20" width="8" height="6" fill="#d3a625" opacity="0.6"/>
+                        <ellipse class="flame" cx="13" cy="12" rx="4.5" ry="9" fill="#f7b733"/>
+                        <ellipse class="flame" cx="13" cy="14" rx="2.2" ry="4.5" fill="#fff3c4"/>
+                    </svg>
+                </div>
             </div>
 
             <div class="workspace">
 
-                <div class="camera-card">
+                <div class="camera-card ornate-frame">
                     <div class="camera-header">
                         <span class="dot"></span> The Enchanted Mirror Sees You
                     </div>
@@ -59,7 +102,7 @@
                     </div>
                 </div>
 
-                <div class="controls-card">
+                <div class="controls-card ornate-frame">
 
                     <div id="record-tab" class="tab-pane active">
                         <p class="desc">Name your sign, hold the gesture before the mirror, and inscribe it into the grimoire so the Oracle may one day learn it.</p>

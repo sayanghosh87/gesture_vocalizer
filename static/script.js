@@ -517,3 +517,25 @@ document.getElementById('video-upload').addEventListener('change', async (e) => 
     
     e.target.value = '';
 });
+
+
+// ====== MAGIC SPARKLE CURSOR TRAIL (purely decorative, self-contained) ======
+(function () {
+    let lastSparkTime = 0;
+    const SPARK_INTERVAL_MS = 45; // throttle so we don't flood the DOM
+
+    document.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastSparkTime < SPARK_INTERVAL_MS) return;
+        lastSparkTime = now;
+
+        const spark = document.createElement('div');
+        spark.className = 'spark';
+        spark.style.left = `${e.clientX + (Math.random() * 10 - 5)}px`;
+        spark.style.top = `${e.clientY + (Math.random() * 10 - 5)}px`;
+        document.body.appendChild(spark);
+
+        // Clean up after the CSS fade-out animation finishes.
+        setTimeout(() => spark.remove(), 750);
+    });
+})();
