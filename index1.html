@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SignAI | Dashboard</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <title>SignScribe | Wizarding Sign Recognition</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=MedievalSharp&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
@@ -16,42 +16,42 @@
 </head>
 <body>
     <div class="app-container">
-        
+
         <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="logo">Sign<span>AI</span></div>
-            
+            <div class="logo">Sign<span>Scribe</span></div>
+
             <nav class="nav-menu">
-                <button class="nav-item active" onclick="switchTab('record', 'Record Gesture Data')">
-                    <span class="icon">⏺</span> Record Data
+                <button class="nav-item active" onclick="switchTab('record', 'Record an Incantation')">
+                    <span class="icon">🕯️</span> Record Gesture
                 </button>
-                <button class="nav-item" onclick="switchTab('train', 'Train AI Model')">
-                    <span class="icon">🧠</span> Train Model
+                <button class="nav-item" onclick="switchTab('train', 'Train the Oracle')">
+                    <span class="icon">🔮</span> Train Model
                 </button>
-                <button class="nav-item" onclick="switchTab('run', 'Live Sign to Text')">
-                    <span class="icon">⚡</span> Sign to Text
+                <button class="nav-item" onclick="switchTab('run', 'Cast: Sign → Text')">
+                    <span class="icon">🪄</span> Sign to Text
                 </button>
-                <button class="nav-item" onclick="switchTab('text2sign', 'Text/Voice to Sign')">
-                    <span class="icon">🗣</span> Text to Sign
+                <button class="nav-item" onclick="switchTab('text2sign', 'Send an Owl: Text → Sign')">
+                    <span class="icon">🦉</span> Text to Sign
                 </button>
             </nav>
-            
+
             <div class="sidebar-footer">
-                <div class="status-indicator live"></div> System Online
+                <div class="status-indicator live"></div> The Enchantment Holds
             </div>
         </aside>
 
         <!-- MAIN CONTENT -->
         <main class="main-content">
             <div class="top-bar">
-                <h2 id="page-title">Record Gesture Data</h2>
+                <h2 id="page-title">Record an Incantation</h2>
             </div>
 
             <div class="workspace">
-                
+
                 <div class="camera-card">
                     <div class="camera-header">
-                        <span class="dot"></span> Camera Feed Active
+                        <span class="dot"></span> The Enchanted Mirror Sees You
                     </div>
                     <div class="video-container">
                         <video class="input_video" style="display: none;" autoplay playsinline></video>
@@ -60,69 +60,69 @@
                 </div>
 
                 <div class="controls-card">
-                    
+
                     <div id="record-tab" class="tab-pane active">
-                        <p class="desc">Enter the label for your sign, hold your hand in position, and click save to add it to the dataset.</p>
+                        <p class="desc">Name your sign, hold the gesture before the mirror, and inscribe it into the grimoire so the Oracle may one day learn it.</p>
                         <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 20px;">
                             <input type="text" class="input-box" id="label-input" placeholder="e.g. HELLO, A, B..." autocomplete="off"/>
-                            <button class="btn" id="record-btn">Save Frame to CSV</button>
+                            <button class="btn" id="record-btn">📜 Inscribe to the Grimoire</button>
                         </div>
                         <p class="status-msg" id="record-status"></p>
                     </div>
 
                     <div id="train-tab" class="tab-pane">
-                        <p class="desc">Ready to learn? This will process your saved CSV data and train a Random Forest classifier so the system can recognize your signs.</p>
+                        <p class="desc">Ready to awaken the Oracle? This brews a classifier from every gesture recorded in the grimoire, so it may recognize your signs.</p>
                         <div style="margin-top: auto; display: flex; flex-direction: column; gap: 20px;">
-                            <button class="btn" id="train-btn">Initialize Training</button>
+                            <button class="btn" id="train-btn">🔮 Brew the Recognition Spell</button>
                             <p class="status-msg" id="train-status"></p>
                         </div>
                     </div>
 
                     <div id="run-tab" class="tab-pane">
                         <div class="live-prediction-display">
-                            <span class="pred-label">Current Sign</span>
+                            <span class="pred-label">The Oracle Speaks</span>
                             <span class="pred-value" id="current-prediction">--</span>
                             <div class="conf-meter">
                                 <div class="conf-fill" id="confidence-fill"></div>
                             </div>
                             <div class="feedback-row">
-                                <button class="feedback-btn correct" id="feedback-correct-btn">✅ Correct</button>
-                                <button class="feedback-btn wrong" id="feedback-wrong-btn">❌ Wrong</button>
+                                <button class="feedback-btn correct" id="feedback-correct-btn">✅ True Prophecy</button>
+                                <button class="feedback-btn wrong" id="feedback-wrong-btn">❌ False Prophecy</button>
                             </div>
-                            <div class="f1-display" id="f1-display">Session F1: -- (give feedback to start tracking)</div>
+                            <div class="f1-display" id="f1-display">The Oracle's Accuracy: -- (offer judgement to begin)</div>
                         </div>
 
                         <div class="text-builder">
                             <div class="text-output" id="built-text"></div>
                             <div class="action-grid">
-                                <button class="act-btn" id="add-btn">➕ Add Sign</button>
+                                <button class="act-btn" id="add-btn">➕ Add Rune</button>
                                 <button class="act-btn" id="space-btn">␣ Space</button>
-                                <button class="act-btn" id="del-btn">⌫ Delete</button>
-                                <button class="act-btn" id="clear-btn">🗑 Clear</button>
-                                <button class="act-btn speak" id="speak-btn">🔊 Speak</button>
+                                <button class="act-btn" id="del-btn">⌫ Erase</button>
+                                <button class="act-btn" id="clear-btn">🗑 Vanish</button>
+                                <button class="act-btn speak" id="speak-btn">🔊 Speak the Words</button>
                             </div>
                         </div>
                     </div>
 
                     <!-- TEXT TO SIGN TAB -->
                     <div id="text2sign-tab" class="tab-pane">
-                        <p class="desc">Type a sentence or use your microphone to see it translated into Sign Language videos.</p>
-                        
+                        <p class="desc">Write a message, or send it by voice, and watch it rendered into the old signs by hand.</p>
+
                         <div class="video-player-box">
                             <video id="sign-video-player" autoplay playsinline></video>
                         </div>
-                        
+
                         <div style="display: flex; gap: 10px; margin-top: 15px;">
-                            <input type="text" class="input-box" id="t2s-input" placeholder="Type here...">
-                            <button class="act-btn" id="mic-btn" style="flex: 0.3; background: rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.4); color: #fff;">🎙 Mic</button>
+                            <input type="text" class="input-box" id="t2s-input" placeholder="Speak your message here...">
+                            <button class="act-btn" id="mic-btn" style="flex: 0.3; background: rgba(211, 166, 37, 0.14); border-color: rgba(211, 166, 37, 0.35); color: var(--text-main);">🎙 Voice</button>
                         </div>
                         <p class="status-msg" id="mic-status" style="color: var(--text-muted); min-height: 18px; margin-top: 6px;"></p>
-                        <button class="btn" id="t2s-translate-btn" style="margin-top: 15px;">Play Translation</button>
+                        <button class="btn" id="t2s-translate-btn" style="margin-top: 15px;">🪄 Reveal the Signs</button>
 
                         <!-- UPLOAD NEW VIDEO BUTTON -->
                         <div style="margin-top: 15px;">
-                            <label for="video-upload" class="act-btn" style="display: block; text-align: center; background: rgba(16, 185, 129, 0.15); color: var(--accent); border-color: rgba(16, 185, 129, 0.3);">
-                                📤 Upload New Sign Video
+                            <label for="video-upload" class="act-btn" style="display: block; text-align: center; background: rgba(211, 166, 37, 0.14); color: var(--accent); border-color: rgba(211, 166, 37, 0.35);">
+                                🦉 Deliver a New Sign by Owl
                             </label>
                             <input type="file" id="video-upload" accept="video/mp4" style="display: none;">
                         </div>
